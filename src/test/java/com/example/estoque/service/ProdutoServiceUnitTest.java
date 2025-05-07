@@ -1,6 +1,5 @@
 package com.example.estoque.service;
 
-import com.example.estoque.domain.Pedido;
 import com.example.estoque.domain.Produto;
 import com.example.estoque.entity.ProdutoEntity;
 import com.example.estoque.repository.ProdutoRepository;
@@ -9,9 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -29,11 +30,11 @@ public class ProdutoServiceUnitTest {
 
     }
 
-    // Dado, quando e então
+    // Dado, quando, e então
 
     // teste1: Teste de produto existente com atualização no banco de dados
     // dado um produto existente
-    // Consultar no banco de dados por fyndByNome
+    // Consultar no banco de dados por findByNome
     // salvar no banco de dados com sucesso
 
     @Test
@@ -51,7 +52,7 @@ public class ProdutoServiceUnitTest {
     // teste2: Teste de produto existente com atualização de quantidade
         // dado um produto existente
         // Consultar no banco de dados como existente
-        // atualizar a qtde e salvar no banco de dados com sucesso
+        // atualizar a quantidade e salvar no banco de dados com sucesso
 
     @Test
     public void dadoUmProduto_quandoEleExiste_atualizarQtdeNoBancoDeDados(){
@@ -61,7 +62,7 @@ public class ProdutoServiceUnitTest {
         produto.setNome("dummy-value");
         produto.setQtd(10);
         produtoService.cadastrarProduto(produto);
-        Assertions.assertEquals(10, produto.getQtd());
+        assertEquals(10, produto.getQtd());
 
     }
 
@@ -84,7 +85,7 @@ public class ProdutoServiceUnitTest {
     }
 
 
-
+//Teste 4:
 
 
     @Test
@@ -101,4 +102,23 @@ public class ProdutoServiceUnitTest {
     }
 
 
+    //Teste 5
+
+
+    @Test
+    void testEncontrarTodos_QuandoNaoHouverProdutos_DeveRetornarListaVazia() {
+
+        when(repository.findAll()).thenReturn(List.of());
+
+        List<Produto> produtos = produtoService.encontrarTodos();
+
+
+        assertEquals(0, produtos.size()); // Lista deve estar vazia
+        verify(repository, times(1)).findAll();
+    }
+
 }
+
+
+
+
