@@ -25,7 +25,24 @@ public class ProdutoServiceUnitTest {
 
     // Dado, quando e então
 
-    // teste1: Teste de produto existente com atualização de quantidade
+    // teste1: Teste de produto existente com atualização no banco de dados
+    // dado um produto existente
+    // Consultar no banco de dados por fyndByNome
+    // salvar no banco de dados com sucesso
+
+    @Test
+    public void dadoUmProduto_quandoEleExiste_atualizarNoBancoDeDados(){
+        Mockito.when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
+
+        Produto produto = new Produto();
+        produto.setNome("dummy-value");
+        produtoService.cadastrarProduto(produto);
+        Mockito.verify(repository, Mockito.times(1))
+                .findByNome("dummy-value");
+    }
+
+
+    // teste2: Teste de produto existente com atualização de quantidade
         // dado um produto existente
         // Consultar no banco de dados como existente
         // atualizar a qtde e salvar no banco de dados com sucesso
@@ -42,7 +59,7 @@ public class ProdutoServiceUnitTest {
 
     }
 
-    // teste2: Teste de produto inexistente com criação do produto
+    // teste3: Teste de produto inexistente com criação do produto
             // dado um produto inexistente
             // Quando ele não existe
             // salvar no banco de dados esse produto
