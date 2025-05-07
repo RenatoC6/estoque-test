@@ -113,7 +113,7 @@ public class ProdutoServiceUnitTest {
         List<Produto> produtos = produtoService.encontrarTodos();
 
 
-        assertEquals(0, produtos.size()); // Lista deve estar vazia
+        assertEquals(0, produtos.size());
         verify(repository, times(1)).findAll();
     }
 
