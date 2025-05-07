@@ -9,6 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+
 public class ProdutoServiceUnitTest {
 
     private ProdutoRepository repository;
@@ -32,12 +38,12 @@ public class ProdutoServiceUnitTest {
 
     @Test
     public void dadoUmProduto_quandoEleExiste_atualizarNoBancoDeDados(){
-        Mockito.when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
+        when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
 
         Produto produto = new Produto();
         produto.setNome("dummy-value");
         produtoService.cadastrarProduto(produto);
-        Mockito.verify(repository, Mockito.times(1))
+        verify(repository, times(1))
                 .findByNome("dummy-value");
     }
 
@@ -49,7 +55,7 @@ public class ProdutoServiceUnitTest {
 
     @Test
     public void dadoUmProduto_quandoEleExiste_atualizarQtdeNoBancoDeDados(){
-        Mockito.when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
+        when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
 
         Produto produto = new Produto();
         produto.setNome("dummy-value");
@@ -66,15 +72,32 @@ public class ProdutoServiceUnitTest {
 
     @Test
     public void dadoUmProduto_quandoEleNaoExiste_salvarNoBancoDeDados(){
-        Mockito.when(repository.findByNome("dummy-value")).thenReturn(null);
+        when(repository.findByNome("dummy-value")).thenReturn(null);
 
         Produto produto = new Produto();
 
         produtoService.cadastrarProduto(produto);
 
-        Mockito.verify(repository, Mockito.times(1))
+        verify(repository, times(1))
                 .save(new ProdutoEntity());
 
+    }
+
+
+
+
+
+    @Test
+    void encontrarTodos_DeveRetornarListaVazia_QuandoRepositorioVazio() {
+
+        when(repository.findAll()).thenReturn(Collections.emptyList());
+
+
+        List<Produto> resultado = produtoService.encontrarTodos();
+
+
+        assertTrue(resultado.isEmpty());
+        verify(repository, times(1)).findAll();
     }
 
 
