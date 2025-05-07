@@ -72,8 +72,9 @@ public class ProdutoServiceUnitTest {
 
         produtoService.cadastrarProduto(produto);
 
-        //Mockito.verify(repository, Mockito.times(1))
-        //        .save(produto);
+        Mockito.verify(repository, Mockito.times(1))
+                .save(new ProdutoEntity());
+
     }
 
 
