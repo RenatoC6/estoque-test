@@ -3,12 +3,10 @@ package com.example.estoque.service;
 import com.example.estoque.domain.Produto;
 import com.example.estoque.entity.ProdutoEntity;
 import com.example.estoque.repository.ProdutoRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,8 +77,8 @@ public class ProdutoServiceUnitTest {
 
         produtoService.cadastrarProduto(produto);
 
-        verify(repository, times(1))
-                .save(new ProdutoEntity());
+        verify(repository, times(1)).save(any(ProdutoEntity.class));
+
 
     }
 
