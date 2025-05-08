@@ -5,9 +5,10 @@ import com.example.estoque.entity.ProdutoEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
+@SpringBootTest
 public class ProdutoRepositoryIntegrationTest {
 
     @Autowired
@@ -15,7 +16,7 @@ public class ProdutoRepositoryIntegrationTest {
 
     @Test
     public void dadoProdutoExiste_quandoFindByNome_entaoAchouProduto() {
-        //var nome = RandomStringUtils.randomNumeric(15);
+
         var produto = new ProdutoEntity();
         produto.setNome("Jose");
         produto.setDescricao("xxxxxx");
@@ -23,7 +24,7 @@ public class ProdutoRepositoryIntegrationTest {
         produto.setQtd(5);
         repository.save(produto);
 
-        var found = repository.findByNome("jose");
+        var found = repository.findByNome("Jose");
         Assertions.assertNotNull(found);
 
     }
