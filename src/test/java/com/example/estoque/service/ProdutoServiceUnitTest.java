@@ -115,6 +115,21 @@ public class ProdutoServiceUnitTest {
         verify(repository, times(1)).findAll();
     }
 
+
+    // teste6: Teste de produto existente com busca pelo nome
+    // dado um produto
+    // quando ele existe
+    // buscar pelo nome
+
+    @Test
+    public void dadoUmProduto_quandoEleExiste_buscarPeloNome(){
+        when(repository.findByNome("dummy-value")).thenReturn(new ProdutoEntity());
+
+        Produto produto = new Produto();
+        produtoService.encontrarPorNome("dummy-value");
+        verify(repository, times(1))
+                .findByNome("dummy-value");
+    }
 }
 
 
