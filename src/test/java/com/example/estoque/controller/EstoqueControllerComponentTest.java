@@ -16,6 +16,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Collections;
+
+import static org.mockito.Mockito.when;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EstoqueControllerComponentTest {
@@ -58,5 +62,44 @@ public class EstoqueControllerComponentTest {
     }
 
 
+    //Listar produtos com lista vazia, retornar lista vazia.
 
-}
+    @Test
+    public void quandoListarProdutos_eNaoExistemProdutos_entaoRetornaListaVazia() throws Exception {
+        when(service.encontrarTodos()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/estoque")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(0));
+    }
+
+    //Buscar o produto por nome, e retornar o produto quando existir.
+    @Test
+    public void quandoBuscarProdutoPorNome_eProdutoExiste_entaoRetornaProduto() throws Exception {
+        when(service.encontrarPorNome("dummy-value")).thenReturn(new Produto());
+        mockMvc.perform(MockMvcRequestBuilders.get("/estoque/dummy-value")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+    }
+
+    //Buscar produto por nome e nao exister, entao retorna ok com body nulo.
+    @Test
+    public void quandoBuscarProdutoPorNome_eProdutoNaoExiste_entaoRetornaOkComBodyNulo() throws Exception {
+        String nomeProdutoInexistente = "Produto Inexistente";
+        when(service.encontrarPorNome(nomeProdutoInexistente)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.get("/estoque/" + nomeProdutoInexistente)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nome").doesNotExist());
+    }
+
+
+
+
+    }
+
+
+
+
