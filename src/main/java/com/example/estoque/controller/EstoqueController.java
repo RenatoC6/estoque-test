@@ -21,9 +21,10 @@ public class EstoqueController {
     }
 
     @PostMapping
-    public ResponseEntity<String> cadastraProduto(@RequestBody Produto produto){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Produto cadastraProduto(@RequestBody Produto produto){
         service.cadastrarProduto(produto);
-        return ResponseEntity.ok().body("Cadastrado com Sucesso");
+        return produto;
     }
 
     @GetMapping
@@ -37,6 +38,7 @@ public class EstoqueController {
     }
 
     @PostMapping("/atualizar")
+    //@ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> atualizarEstoque(@RequestBody Pedido pedido){
         try{
             service.atualizarEstoque(pedido);
