@@ -1,5 +1,6 @@
 package com.example.estoque.controller;
 
+import com.example.estoque.domain.Pedido;
 import com.example.estoque.domain.Produto;
 import com.example.estoque.entity.ProdutoEntity;
 import com.example.estoque.service.ProdutoService;
@@ -49,4 +50,13 @@ public class EstoqueControllerComponentTest {
                 MockMvcResultMatchers.status().isCreated()
         );
     }
+
+    @Test
+    public void atualizarEstoque_comMetodoPut_retornaMethodNotAllowed() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/estoque/atualizar"))
+                .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+    }
+
+
+
 }
