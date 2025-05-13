@@ -1,18 +1,20 @@
 package com.example.estoque.service;
 
+import com.example.estoque.domain.ItemPedido;
+import com.example.estoque.domain.Pedido;
 import com.example.estoque.domain.Produto;
 import com.example.estoque.entity.ProdutoEntity;
+import com.example.estoque.exception.ForaDeEstoqueException;
 import com.example.estoque.repository.ProdutoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import java.util.List;
 
 public class ProdutoServiceUnitTest {
 
@@ -58,7 +60,7 @@ public class ProdutoServiceUnitTest {
 
         Produto produto = new Produto();
         produto.setNome("dummy-value");
-        produto.setQtd(10);
+        produto.setQtd(Integer.valueOf(10));
         produtoService.cadastrarProduto(produto);
         assertEquals(10, produto.getQtd());
 
@@ -130,6 +132,101 @@ public class ProdutoServiceUnitTest {
         verify(repository, times(1))
                 .findByNome("dummy-value");
     }
+
+    // TESTE GARANTIR QUE UM PRODUTO INEXISTENTE GERA UMA EXCEÇÃO
+    @Test
+    void deveLancarExcecaoQuandoProdutoNaoExiste() {
+
+        ItemPedido item = new ItemPedido();
+        item.setId(Long.valueOf(3L));
+        item.setQtd(Integer.valueOf(1));
+
+        Pedido pedido = new Pedido();
+        pedido.setItens(List.of(item));
+
+        when(repository.findById(Long.valueOf(3L))).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class, () -> produtoService.atualizarEstoque(pedido));
+    }
+
+
+    //TESTE ATUALIZAR ESTOQUE DEVE LANÇAR EXCEÇÃO QUANDO A QUANTIDADE DE ITEM FOR MAIOR QUE O ESTOQUE
+    @Test
+    void atualizarEstoque_DeveLancarExcecao_QuandoQuantidadeItemMaiorQueEstoque() {
+
+        ProdutoEntity produtoEntity = new ProdutoEntity();
+        produtoEntity.setId(Long.valueOf(1L));
+        produtoEntity.setQtd(Integer.valueOf(5));
+        produtoEntity.setNome("Produto A");
+
+        ItemPedido item = new ItemPedido();
+        item.setId(Long.valueOf(1L));
+        item.setQtd(Integer.valueOf(10));
+
+        Pedido pedido = new Pedido();
+        pedido.setItens(List.of(item));
+
+        when(repository.findById(Long.valueOf(1L))).thenReturn(Optional.of(produtoEntity));
+
+
+        ForaDeEstoqueException exception = assertThrows(
+                ForaDeEstoqueException.class,
+                () -> produtoService.atualizarEstoque(pedido)
+        );
+
+        assertEquals(
+                "Produto Produto A possui apenas: 5 em estoque",
+                exception.getMessage()
+        );
+
+        verify(repository, never()).save(any());
+    }
+
+
+    //TESTE ATUALIZAR ESTOQUE DEVE BUSCAR PELO ID CORRETO DO ITEM
+    @Test
+    void atualizarEstoque_DeveBuscarPeloIdCorretoDoItem() {
+        Long idProduto = (Long) 123L;
+        ItemPedido item = new ItemPedido();
+        item.setId(idProduto);
+        item.setQtd(Integer.valueOf(1));
+
+        Pedido pedido = new Pedido();
+        pedido.setItens(List.of(item));
+
+        ProdutoEntity produto = new ProdutoEntity();
+        produto.setId(idProduto);
+        produto.setQtd(Integer.valueOf(10));
+
+        when(repository.findById(idProduto)).thenReturn(Optional.of(produto));
+
+        produtoService.atualizarEstoque(pedido);
+
+        verify(repository, times(1)).findById(idProduto);
+    }
+
+    //TESTE ATUALIZAR ESTOQUE DEVE ATUALIZAR O ESTOQUE QUANDO A QUANTIDADE FOR SUFICIENTE
+    @Test
+    void atualizarEstoque_DeveAtualizarEstoque_QuandoQuantidadeSuficiente() {
+        ProdutoEntity produtoEntity = new ProdutoEntity();
+        produtoEntity.setId(Long.valueOf(1L));
+        produtoEntity.setQtd(Integer.valueOf(15));
+
+        ItemPedido item = new ItemPedido();
+        item.setId(Long.valueOf(1L));
+        item.setQtd(Integer.valueOf(10));
+
+        Pedido pedido = new Pedido();
+        pedido.setItens(List.of(item));
+
+        when(repository.findById(Long.valueOf(1L))).thenReturn(Optional.of(produtoEntity));
+
+        produtoService.atualizarEstoque(pedido);
+
+        assertEquals(5, produtoEntity.getQtd());
+        verify(repository, times(1)).save(produtoEntity);
+    }
+
 }
 
 
