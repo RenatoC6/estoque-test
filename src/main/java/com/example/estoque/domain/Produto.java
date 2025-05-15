@@ -12,12 +12,7 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto(String nome, String descricao, Double preco, Integer qtd) {
-        this.nome = nome;
-        this.descricao = descricao;
-        this.preco = preco;
-        this.qtd = qtd;
-    }
+
 
     public Produto(ProdutoEntity entity) {
         this.nome = entity.getNome();
@@ -26,8 +21,7 @@ public class Produto {
         this.qtd = entity.getQtd();
     }
 
-    public Produto(String nomeProduto, int i, double v) {
-    }
+
 
     public String getNome() {
         return nome;
@@ -41,17 +35,12 @@ public class Produto {
         return descricao;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
 
     public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(Double preco) {
-        this.preco = preco;
-    }
+
 
     public Integer getQtd() {
         return qtd;
